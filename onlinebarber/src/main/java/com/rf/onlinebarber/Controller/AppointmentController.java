@@ -18,6 +18,10 @@ public class AppointmentController {
         return appointmentService.createAppointment(customerId,modelId,request);
     }
     // randevu iptal etme
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> cancelAppointment(@PathVariable Long id){
+        return appointmentService.cancelAppointment(id);
+    }
     // mağaza tarafından gelen randevuları görme
     @GetMapping("/list/{shopId}")
     public ResponseEntity<?> getList(@PathVariable Long shopId){

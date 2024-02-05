@@ -22,9 +22,10 @@ public class Appointment {
     @ManyToOne
     @JoinColumn(name = "customerId")
     private Customer customer;
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne()
     @JoinColumn(name = "modelId")
     private ShavingModel shavingModel;
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime date;
+
 }

@@ -4,6 +4,7 @@ import com.rf.onlinebarber.Dto.CreateAppointmentRequest;
 import com.rf.onlinebarber.Entity.Appointment;
 import com.rf.onlinebarber.Entity.Customer;
 import com.rf.onlinebarber.Entity.ShavingModel;
+import com.rf.onlinebarber.Exception.ModelNotFoundException;
 import com.rf.onlinebarber.Repository.AppointmentRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -32,16 +33,16 @@ public class AppointmentService {
         ShavingModel model = shavingModelService.findById(modelId);
         Appointment appointment = new Appointment();
         if (!isAvailable(request.getDateTime(), model.getShop().getId())) {
-           return ResponseEntity.badRequest().body("Berber musait değil lütgen başka bir tarih için tekrar randevu alın");
+            return ResponseEntity.badRequest().body("Berber musait değil lütgen başka bir tarih için tekrar randevu alın");
         }
         if (!anotherAppointmentValid(request.getDateTime(), customer)) {
             return ResponseEntity.badRequest().body("Bugün başka bir yerde daha randevunuz gözüküyor lütfen iptal edip tekrLr deneyin");
         }
-            appointment.setCustomer(customer);
-            appointment.setShavingModel(model);
-            appointment.setDate(request.getDateTime());
-            appointmentRepository.save(appointment);
-            return ResponseEntity.ok("Sayın+ " + customer.getEmail() + " " + request.getDateTime() + " tarihinde randevunuz oluşmuştur");
+        appointment.setCustomer(customer);
+        appointment.setShavingModel(model);
+        appointment.setDate(request.getDateTime());
+        appointmentRepository.save(appointment);
+        return ResponseEntity.ok("Sayın+ " + customer.getEmail() + " " + request.getDateTime() + " tarihinde randevunuz oluşmuştur");
 
     }
 
@@ -64,11 +65,11 @@ public class AppointmentService {
         }
         for (Appointment appointment : appointmentList(shopId)) {
             if (appointment.getDate().isEqual(dateTime)) {
-                 System.out.println("tarihler ayni");
+                System.out.println("tarihler ayni");
                 return false;
             }
         }
-         System.out.println("asasa");
+        System.out.println("asasa");
 
         return true;
     }
@@ -89,4 +90,9 @@ public class AppointmentService {
         return date1.getDayOfYear() == date2.getDayOfYear() && date1.getYear() == date2.getYear();
     }
 
+    public ResponseEntity<?> cancelAppointment(Long id) {
+        Appointment appointment = appointmentRepository.findById(id).orElseThrow(() -> new ModelNotFoundException(id));
+        appointmentRepository.delete(appointment);
+        return ResponseEntity.ok("randevu iptal edildi");
+    }
 }

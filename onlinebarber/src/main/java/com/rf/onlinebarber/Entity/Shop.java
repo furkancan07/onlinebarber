@@ -1,11 +1,14 @@
 package com.rf.onlinebarber.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rf.onlinebarber.Validation.UniqueEmail;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -23,6 +26,8 @@ public class Shop {
     @Lob
     private String image;
     private String phoneNumber;
-
+    @OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE)
+    @JsonIgnore
+    private List<ShavingModel> shavingModels;
 
 }

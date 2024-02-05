@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.List;
 
 @Entity
 @Data
@@ -22,7 +23,9 @@ public class ShavingModel {
     @Lob
     private String image;
     private int price;
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne()
     @JoinColumn(name = "shopId")
     private Shop shop;
+    @OneToMany(mappedBy = "shavingModel", cascade = CascadeType.REMOVE)
+    private List<Appointment> appointmentList;
 }
