@@ -15,7 +15,6 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
     public ResponseEntity<?> saveCustomer(SaveCustomerRequest request) {
-        request.setPassword(passwordEncoder.encode(request.getPassword()));
         Customer customer=request.toCustomer(request);
         customerRepository.save(customer);
         return ResponseEntity.ok("Müşteri kayıt oldu");

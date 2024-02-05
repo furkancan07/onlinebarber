@@ -27,30 +27,29 @@ public class AppointmentService {
 
     private List<Appointment> appointments;
 
-    @PostConstruct
-    private void initAppointments() {
-        this.appointments = appointmentRepository.findAll();
-    }
-
-
     public ResponseEntity<?> createAppointment(Long customerId, Long modelId, CreateAppointmentRequest request) {
         Customer customer = customerService.findById(customerId);
-        ShavingModel model=shavingModelService.findById(modelId);
-        Appointment appointment=new Appointment();
-        if(isAvailable(request.getDateTime(),model.getShop().getId())){
+        ShavingModel model = shavingModelService.findById(modelId);
+        Appointment appointment = new Appointment();
+        if (!isAvailable(request.getDateTime(), model.getShop().getId())) {
+           return ResponseEntity.badRequest().body("Berber musait değil lütgen başka bir tarih için tekrar randevu alın");
+        }
+        if (!anotherAppointmentValid(request.getDateTime(), customer)) {
+            return ResponseEntity.badRequest().body("Bugün başka bir yerde daha randevunuz gözüküyor lütfen iptal edip tekrLr deneyin");
+        }
             appointment.setCustomer(customer);
             appointment.setShavingModel(model);
             appointment.setDate(request.getDateTime());
             appointmentRepository.save(appointment);
-            return ResponseEntity.ok("Sayın+ "+customer.getEmail()+" "+ request.getDateTime()+" tarihinde randevunuz oluşmuştur");
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Berber bu tarihte musait değil lütfen tekrar deneyiniz");
+            return ResponseEntity.ok("Sayın+ " + customer.getEmail() + " " + request.getDateTime() + " tarihinde randevunuz oluşmuştur");
+
     }
+
     // bir mağazaya ait randevular
-    public List<Appointment> appointmentList(Long shopId){
-        List<Appointment> appointmentS=new ArrayList<>();
-        for(Appointment appointment : appointments){
-            if(appointment.getShavingModel().getShop().getId()==shopId){
+    public List<Appointment> appointmentList(Long shopId) {
+        List<Appointment> appointmentS = new ArrayList<>();
+        for (Appointment appointment : appointmentRepository.findAll()) {
+            if (appointment.getShavingModel().getShop().getId() == shopId) {
                 appointmentS.add(appointment);
             }
         }
@@ -60,14 +59,34 @@ public class AppointmentService {
     // berber müsait mi kontrolu
     private boolean isAvailable(LocalDateTime dateTime, Long shopId) {
         // seçilen tarih şu andan eski ,günlerden pazar ve saat 9 ile 22 arasinda değilse randevu oluşturmayacak
-        if(dateTime.isBefore(LocalDateTime.now()) || dateTime.getDayOfWeek()== DayOfWeek.SUNDAY || dateTime.getHour()<9 || dateTime.getHour()>=22){
+        if (dateTime.isBefore(LocalDateTime.now()) || dateTime.getDayOfWeek() == DayOfWeek.SUNDAY || dateTime.getHour() < 9 || dateTime.getHour() >= 22) {
             return false;
         }
-        for(Appointment appointment : appointmentList(shopId)){
-            if(appointment.getDate().isEqual(dateTime)){
+        for (Appointment appointment : appointmentList(shopId)) {
+            if (appointment.getDate().isEqual(dateTime)) {
+                 System.out.println("tarihler ayni");
                 return false;
             }
         }
+         System.out.println("asasa");
+
         return true;
     }
+
+    // müşteri aynı gün içinde başka bir berbere randevu oluşturmuş mu
+    private boolean anotherAppointmentValid(LocalDateTime dateTime, Customer customer) {
+        for (Appointment appointment : appointmentRepository.findByCustomerAndDate(customer, dateTime)) {
+            if (isSameDay(appointment.getDate(), dateTime)) {
+                System.out.println("hata");
+                return false;
+            }
+        }
+        System.out.println("çalışır");
+        return true;
+    }
+
+    private boolean isSameDay(LocalDateTime date1, LocalDateTime date2) {
+        return date1.getDayOfYear() == date2.getDayOfYear() && date1.getYear() == date2.getYear();
+    }
+
 }

@@ -17,5 +17,5 @@ public class Customer {
     private Long id;
     @Column(unique = true)
     private String email;
-    private String password;
+    private String phoneNumber;
 }

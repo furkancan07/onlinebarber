@@ -21,11 +21,7 @@ public class ShavingModelService {
 
     private final ShavingModelRepository shavingModelRepository;
     private final ShopRepository shopRepository;
-    List<ShavingModel> shavingModels ;
 
-    private void initAppointments() {
-        this.shavingModels = shavingModelRepository.findAll();
-    }
     public ResponseEntity<?> addShavingModel(AddShavingModelRequest request, Long shopId) {
         Shop shop=shopRepository.findById(shopId).orElseThrow(()->new ShopNotFoundException(shopId));
         ShavingModel shavingModel=ShavingModel.builder().shop(shop).
@@ -55,7 +51,7 @@ public class ShavingModelService {
     }
     public List<ShavingModel> shavingModelList(Long shopId){
         List<ShavingModel> list=new ArrayList<>();
-        for(ShavingModel model : shavingModels){
+        for(ShavingModel model : shavingModelRepository.findAll()){
             if(model.getShop().getId()==shopId){
                 list.add(model);
             }

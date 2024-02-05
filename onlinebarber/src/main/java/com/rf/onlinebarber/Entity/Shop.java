@@ -24,4 +24,5 @@ public class Shop {
     private String image;
     private String phoneNumber;
 
+
 }

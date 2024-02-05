@@ -21,13 +21,11 @@ public class SaveCustomerRequest {
     @Email
     private String email;
     @NotNull
-    @Size(min = 8,max = 256)
-    @Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{5,}$" ,message = "Lütfen en az bir büyük harf,bir küçük harf ve sayi kullanin")
-    private String password;
+    private String phoneNumber;
 
     public Customer toCustomer(SaveCustomerRequest request){
         return Customer.builder().
-        email(request.getEmail()).password(request.getPassword()).
+        email(request.getEmail()).phoneNumber(request.getPhoneNumber()).
                 build();
     }
 }

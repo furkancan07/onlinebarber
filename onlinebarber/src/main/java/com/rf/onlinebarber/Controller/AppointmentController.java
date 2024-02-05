@@ -19,5 +19,9 @@ public class AppointmentController {
     }
     // randevu iptal etme
     // mağaza tarafından gelen randevuları görme
+    @GetMapping("/list/{shopId}")
+    public ResponseEntity<?> getList(@PathVariable Long shopId){
+        return ResponseEntity.ok(appointmentService.appointmentList(shopId));
+    }
 
 }
