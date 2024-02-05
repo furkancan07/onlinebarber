@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -23,6 +24,5 @@ public class Appointment {
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "modelId")
     private ShavingModel shavingModel;
-    private String email;
-    private Date date;
+    private LocalDateTime date;
 }
