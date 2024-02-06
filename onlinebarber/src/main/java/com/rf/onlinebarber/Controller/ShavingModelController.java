@@ -1,10 +1,13 @@
 package com.rf.onlinebarber.Controller;
 
 import com.rf.onlinebarber.Dto.AddShavingModelRequest;
+import com.rf.onlinebarber.Dto.ShavingModelResponse;
 import com.rf.onlinebarber.Dto.UpdateModelRequest;
+import com.rf.onlinebarber.Entity.ShavingModel;
 import com.rf.onlinebarber.Service.ShavingModelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,4 +32,13 @@ public class ShavingModelController {
         return shavingModelService.updateModel(request,id);
     }
     // bir mağazaya ait saç modellerini listele
+    @GetMapping("/list/{shopId}")
+    public Page<ShavingModelResponse> getModelList(@PathVariable Long shopId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "12") int size){
+        return shavingModelService.getModelList(shopId,page,size);
+    }
+    // bir tıraş bilgilerini görüntüleme
+    @GetMapping("/{id}")
+    public ShavingModelResponse getModel(@PathVariable Long id){
+        return shavingModelService.getModel(id);
+    }
 }

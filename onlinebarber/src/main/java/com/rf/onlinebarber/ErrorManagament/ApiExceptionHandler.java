@@ -1,8 +1,6 @@
 package com.rf.onlinebarber.ErrorManagament;
 
-import com.rf.onlinebarber.Exception.CustomerNotFoundException;
-import com.rf.onlinebarber.Exception.ModelNotFoundException;
-import com.rf.onlinebarber.Exception.ShopNotFoundException;
+import com.rf.onlinebarber.Exception.*;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -45,6 +43,18 @@ public class ApiExceptionHandler {
     }
     @ExceptionHandler(CustomerNotFoundException.class)
     public ResponseEntity<ApiError> CustomerNotFoundEx(CustomerNotFoundException ex,HttpServletRequest http){
+        ApiError apiError=new ApiError();
+        apiError=ApiError.builder().path(http.getRequestURI()).status(404).timestamp(apiError.getTimestamp()).message(ex.getMessage()).build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
+    }
+    @ExceptionHandler(CustomerActivationException.class)
+    public ResponseEntity<ApiError> CustomerActivationFoundEx(CustomerActivationException ex,HttpServletRequest http){
+        ApiError apiError=new ApiError();
+        apiError=ApiError.builder().path(http.getRequestURI()).status(404).timestamp(apiError.getTimestamp()).message(ex.getMessage()).build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
+    }
+    @ExceptionHandler(ActivationCodeException.class)
+    public ResponseEntity<ApiError> ActivationCodeEx(ActivationCodeException ex,HttpServletRequest http){
         ApiError apiError=new ApiError();
         apiError=ApiError.builder().path(http.getRequestURI()).status(404).timestamp(apiError.getTimestamp()).message(ex.getMessage()).build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);

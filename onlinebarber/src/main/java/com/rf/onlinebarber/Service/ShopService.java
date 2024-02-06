@@ -1,11 +1,15 @@
 package com.rf.onlinebarber.Service;
 
+import com.rf.onlinebarber.Dto.DtoConverter;
 import com.rf.onlinebarber.Dto.OpenShopRequest;
+import com.rf.onlinebarber.Dto.ShopResponse;
 import com.rf.onlinebarber.Dto.UpdateShopRequest;
 import com.rf.onlinebarber.Entity.Shop;
 import com.rf.onlinebarber.Exception.ShopNotFoundException;
 import com.rf.onlinebarber.Repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,6 +19,7 @@ import org.springframework.stereotype.Service;
 public class ShopService {
     private final ShopRepository shopRepository;
     private final PasswordEncoder passwordEncoder;
+    private final DtoConverter converter;
     public ResponseEntity<?> openShop(OpenShopRequest request) {
         request.setPassword(passwordEncoder.encode(request.getPassword()));
         Shop shop=Shop.builder().name(request.getName()).email(request.getEmail()).
@@ -39,5 +44,9 @@ public class ShopService {
         shop.setPhoneNumber(request.getPhoneNumber());
         shopRepository.save(shop);
         return ResponseEntity.ok("Mağaza Bilgileri Güncellendi");
+    }
+    public Page<ShopResponse> getShopList(int page, int size) {
+        Page<Shop> shopList=shopRepository.findAll(PageRequest.of(page,size));
+        return shopList.map(converter::shopConverter);
     }
 }

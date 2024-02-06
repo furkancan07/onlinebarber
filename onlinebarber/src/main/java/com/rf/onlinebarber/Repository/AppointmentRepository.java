@@ -14,6 +14,7 @@ import java.util.List;
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment,Long> {
     public List<Appointment> findByCustomerAndDate(Customer customer, LocalDateTime dateTime);
+    public List<Appointment> findByCustomerId(Long customerId);
     @Query("SELECT a FROM Appointment a WHERE a.date < :dateTime")
     List<Appointment> findAllBeforeDateTime(@Param("dateTime") LocalDateTime dateTime);
 

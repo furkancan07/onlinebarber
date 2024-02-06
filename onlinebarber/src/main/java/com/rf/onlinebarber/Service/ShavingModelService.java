@@ -1,6 +1,8 @@
 package com.rf.onlinebarber.Service;
 
 import com.rf.onlinebarber.Dto.AddShavingModelRequest;
+import com.rf.onlinebarber.Dto.DtoConverter;
+import com.rf.onlinebarber.Dto.ShavingModelResponse;
 import com.rf.onlinebarber.Dto.UpdateModelRequest;
 import com.rf.onlinebarber.Entity.ShavingModel;
 import com.rf.onlinebarber.Entity.Shop;
@@ -9,6 +11,8 @@ import com.rf.onlinebarber.Exception.ShopNotFoundException;
 import com.rf.onlinebarber.Repository.ShavingModelRepository;
 import com.rf.onlinebarber.Repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +25,7 @@ public class ShavingModelService {
 
     private final ShavingModelRepository shavingModelRepository;
     private final ShopRepository shopRepository;
+    private final DtoConverter converter;
 
     public ResponseEntity<?> addShavingModel(AddShavingModelRequest request, Long shopId) {
         Shop shop=shopRepository.findById(shopId).orElseThrow(()->new ShopNotFoundException(shopId));
@@ -57,5 +62,15 @@ public class ShavingModelService {
             }
         }
         return list;
+    }
+
+    public Page<ShavingModelResponse> getModelList(Long shopId, int page, int size) {
+        Page<ShavingModel> models=shavingModelRepository.findAll(PageRequest.of(page,size));
+        return models.map(converter::modelConverter);
+    }
+
+    public ShavingModelResponse getModel(Long id) {
+        ShavingModel shavingModel=shavingModelRepository.findById(id).orElseThrow(()->new ModelNotFoundException(id));
+        return converter.modelConverter(shavingModel);
     }
 }

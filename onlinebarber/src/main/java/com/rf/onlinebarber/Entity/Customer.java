@@ -18,4 +18,6 @@ public class Customer {
     @Column(unique = true)
     private String email;
     private String phoneNumber;
+    private String activationCode;
+    private boolean active=false;
 }

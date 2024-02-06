@@ -27,5 +27,11 @@ public class AppointmentController {
     public ResponseEntity<?> getList(@PathVariable Long shopId){
         return ResponseEntity.ok(appointmentService.appointmentList(shopId));
     }
+    // müşteri olarak randevuları görme email ve mailine gelen kod ile görebilecek
+    @GetMapping("/cList/{customerId}")
+    public ResponseEntity<?> getCustomerAppointments(@PathVariable Long customerId){
+        return appointmentService.getCustomerAppointments(customerId);
+    }
+
 
 }
