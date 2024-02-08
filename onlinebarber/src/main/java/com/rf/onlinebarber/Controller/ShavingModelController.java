@@ -4,11 +4,15 @@ import com.rf.onlinebarber.Dto.AddShavingModelRequest;
 import com.rf.onlinebarber.Dto.ShavingModelResponse;
 import com.rf.onlinebarber.Dto.UpdateModelRequest;
 import com.rf.onlinebarber.Entity.ShavingModel;
+import com.rf.onlinebarber.Entity.Shop;
 import com.rf.onlinebarber.Service.ShavingModelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,17 +21,20 @@ import org.springframework.web.bind.annotation.*;
 public class ShavingModelController {
     private final ShavingModelService shavingModelService;
     // model ekleme
-    @PostMapping("/add/{shopId}")
-    public ResponseEntity<?> addShavingModel(@Valid @RequestBody AddShavingModelRequest request, @PathVariable Long shopId) {
-        return shavingModelService.addShavingModel(request, shopId);
+    @PostMapping("/add/{id}")
+    @PreAuthorize("#id==authentication.principal.id")
+    public ResponseEntity<?> addShavingModel(@Valid @RequestBody AddShavingModelRequest request, @PathVariable Long id) {
+        return shavingModelService.addShavingModel(request, id);
     }
     // model silme
     @DeleteMapping("/delete/{id}")
+
     public ResponseEntity<?> deleteModel(@PathVariable Long id){
         return shavingModelService.deleteModel(id);
     }
     // model güncelleme
     @PutMapping("/update/{id}")
+
     public ResponseEntity<?> updateModel(@PathVariable Long id, UpdateModelRequest request){
         return shavingModelService.updateModel(request,id);
     }

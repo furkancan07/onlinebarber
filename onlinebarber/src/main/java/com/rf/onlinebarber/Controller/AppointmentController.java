@@ -5,6 +5,7 @@ import com.rf.onlinebarber.Service.AppointmentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,11 +20,13 @@ public class AppointmentController {
     }
     // randevu iptal etme
     @DeleteMapping("/delete/{id}")
+
     public ResponseEntity<?> cancelAppointment(@PathVariable Long id){
         return appointmentService.cancelAppointment(id);
     }
     // mağaza tarafından gelen randevuları görme
     @GetMapping("/list/{shopId}")
+    @PreAuthorize("#shopId==principal.id")
     public ResponseEntity<?> getList(@PathVariable Long shopId){
         return ResponseEntity.ok(appointmentService.appointmentList(shopId));
     }

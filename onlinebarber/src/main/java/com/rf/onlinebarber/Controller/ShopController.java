@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,12 +27,14 @@ public class ShopController {
 
     // mağaza bilgilerini güncelleme
     @PutMapping("/update/{id}")
+    @PreAuthorize("#id==authentication.principal.id")
     public ResponseEntity<?> updateShop(@PathVariable Long id, @Valid @RequestBody UpdateShopRequest request) {
         return shopService.updateShop(id, request);
     }
 
     // mağaza silme
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("#id==principal.id")
     public ResponseEntity<?> deleteShop(@PathVariable Long id) {
         return shopService.deleteShop(id);
     }

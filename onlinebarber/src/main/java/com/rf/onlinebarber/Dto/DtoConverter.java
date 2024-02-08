@@ -23,4 +23,5 @@ public class DtoConverter {
                 .customer(appointment.getCustomer()).id(appointment.getId())
                 .build();
     }
+
 }

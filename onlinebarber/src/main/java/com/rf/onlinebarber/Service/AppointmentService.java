@@ -1,11 +1,14 @@
 package com.rf.onlinebarber.Service;
 
+import com.rf.onlinebarber.Configuration.BeanConfig;
 import com.rf.onlinebarber.Dto.AppointmentResponse;
 import com.rf.onlinebarber.Dto.CreateAppointmentRequest;
 import com.rf.onlinebarber.Dto.DtoConverter;
 import com.rf.onlinebarber.Entity.Appointment;
 import com.rf.onlinebarber.Entity.Customer;
 import com.rf.onlinebarber.Entity.ShavingModel;
+import com.rf.onlinebarber.Entity.Shop;
+import com.rf.onlinebarber.Exception.AuthorizationException;
 import com.rf.onlinebarber.Exception.CustomerActivationException;
 import com.rf.onlinebarber.Exception.ModelNotFoundException;
 import com.rf.onlinebarber.Repository.AppointmentRepository;
@@ -31,8 +34,10 @@ public class AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final CustomerService customerService;
     private final ShavingModelService shavingModelService;
+    private final ShopService shopService;
     private final DtoConverter converter;
     private final MailService mailService;
+    private final BeanConfig config;
 
     private List<Appointment> appointments;
 
@@ -58,6 +63,7 @@ public class AppointmentService {
 
     // bir mağazaya ait randevular
     public List<AppointmentResponse> appointmentList(Long shopId) {
+        if(!config.isAuthenticate(config.getAuthentication(),shopService.findById(shopId))) throw new AuthorizationException();
         List<Appointment> appointmentS = new ArrayList<>();
         for (Appointment appointment : appointmentRepository.findAll()) {
             if (appointment.getShavingModel().getShop().getId() == shopId) {
