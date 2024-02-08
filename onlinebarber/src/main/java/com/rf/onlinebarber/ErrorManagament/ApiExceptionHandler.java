@@ -74,7 +74,7 @@ public class ApiExceptionHandler {
     @ExceptionHandler(AuthorizationException.class)
     public ResponseEntity<ApiError> AuthorizationEx(AuthorizationException ex,HttpServletRequest http){
         ApiError apiError=new ApiError();
-        apiError=ApiError.builder().path(http.getRequestURI()).status(403).timestamp(apiError.getTimestamp()).message(ex.getMessage()).build();
+        apiError=ApiError.builder().path(http.getRequestURI()).status(401).timestamp(apiError.getTimestamp()).message(ex.getMessage()).build();
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiError);
     }
 }

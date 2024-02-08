@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -29,9 +30,14 @@ public class Shop implements UserDetails {
     @Lob
     private String image;
     private String phoneNumber;
+    @JsonIgnore
+    private LocalDateTime loginDateTime;
     @OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE)
     @JsonIgnore
     private List<ShavingModel> shavingModels;
+   @OneToMany(mappedBy = "shop",cascade = CascadeType.REMOVE)
+   @JsonIgnore
+   private List<Token> tokens;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

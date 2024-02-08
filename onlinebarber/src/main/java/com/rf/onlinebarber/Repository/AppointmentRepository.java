@@ -18,4 +18,5 @@ public interface AppointmentRepository extends JpaRepository<Appointment,Long> {
     @Query("SELECT a FROM Appointment a WHERE a.date < :dateTime")
     List<Appointment> findAllBeforeDateTime(@Param("dateTime") LocalDateTime dateTime);
 
+
 }
