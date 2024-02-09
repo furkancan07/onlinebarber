@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @Builder
@@ -22,4 +24,6 @@ public class Token {
     @JoinColumn(name = "shopId")
     @JsonIgnore
     private Shop shop;
+    @JsonIgnore
+    private LocalDateTime loginDateTime;
 }

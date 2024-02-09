@@ -7,16 +7,16 @@ import com.rf.onlinebarber.Dto.DtoConverter;
 import com.rf.onlinebarber.Entity.Appointment;
 import com.rf.onlinebarber.Entity.Customer;
 import com.rf.onlinebarber.Entity.ShavingModel;
-import com.rf.onlinebarber.Entity.Shop;
+
 import com.rf.onlinebarber.Exception.AuthorizationException;
 import com.rf.onlinebarber.Exception.CustomerActivationException;
 import com.rf.onlinebarber.Exception.ModelNotFoundException;
 import com.rf.onlinebarber.Repository.AppointmentRepository;
-import jakarta.annotation.PostConstruct;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
@@ -39,7 +39,6 @@ public class AppointmentService {
     private final MailService mailService;
     private final BeanConfig config;
 
-    private List<Appointment> appointments;
 
     @Transactional(rollbackOn = MailException.class)
     public ResponseEntity<?> createAppointment(Long customerId, Long modelId, CreateAppointmentRequest request) {
@@ -56,14 +55,15 @@ public class AppointmentService {
         appointment.setShavingModel(model);
         appointment.setDate(request.getDateTime());
         appointmentRepository.save(appointment);
-        mailService.sendAppointmentİnformation(appointment);
+        mailService.sendAppointmentInformation(appointment);
         return ResponseEntity.ok("Sayın+ " + customer.getEmail() + " " + request.getDateTime() + " tarihinde randevunuz oluşmuştur");
 
     }
 
     // bir mağazaya ait randevular
     public List<AppointmentResponse> appointmentList(Long shopId) {
-        if(!config.isAuthenticate(config.getAuthentication(),shopService.findById(shopId))) throw new AuthorizationException();
+        if (!config.isAuthenticate(config.getAuthentication(), shopService.findById(shopId)))
+            throw new AuthorizationException();
         List<Appointment> appointmentS = new ArrayList<>();
         for (Appointment appointment : appointmentRepository.findAll()) {
             if (appointment.getShavingModel().getShop().getId() == shopId) {
@@ -105,7 +105,8 @@ public class AppointmentService {
     private boolean isSameDay(LocalDateTime date1, LocalDateTime date2) {
         return date1.getDayOfYear() == date2.getDayOfYear() && date1.getYear() == date2.getYear();
     }
-// randevu iptal edilince müşteriye mail gönderilsin
+
+    // randevu iptal edilince müşteriye mail gönderilsin
     @Transactional(rollbackOn = MailException.class)
     public ResponseEntity<?> cancelAppointment(Long id) {
         Appointment appointment = appointmentRepository.findById(id).orElseThrow(() -> new ModelNotFoundException(id));
@@ -115,9 +116,9 @@ public class AppointmentService {
     }
 
     public ResponseEntity<?> getCustomerAppointments(Long customerId) {
-        Customer customer=customerService.findById(customerId);
-        if(!customer.isActive())  throw new CustomerActivationException();
-        List<AppointmentResponse> list=appointmentRepository.findByCustomerId(customerId).stream().map(converter::appointmentConverter).collect(Collectors.toList());
+        Customer customer = customerService.findById(customerId);
+        if (!customer.isActive()) throw new CustomerActivationException();
+        List<AppointmentResponse> list = appointmentRepository.findByCustomerId(customerId).stream().map(converter::appointmentConverter).collect(Collectors.toList());
         return ResponseEntity.ok(list);
     }
 }

@@ -25,31 +25,31 @@ public class TokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-      String token=getToken(request);
+        String token = getToken(request);
 
-    if (token != null) {
-        Shop shop = tokenService.verifyToken(token);
-        if (shop != null) {
-            UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(shop, null, shop.getAuthorities());
-            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        if (token != null) {
+            Shop shop = tokenService.verifyToken(token);
+            if (shop != null) {
+                UsernamePasswordAuthenticationToken authenticationToken =
+                        new UsernamePasswordAuthenticationToken(shop, null, shop.getAuthorities());
+                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            }
+
         }
-
-}
-      filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
     }
-    private String getToken(HttpServletRequest request){
-String prefix=request.getHeader("Authorization");
-        var cookies=request.getCookies();
-        if(cookies!=null){
-            for (Cookie cook : cookies){
-                if(cook.getName().equals("login-token") && (cook.getValue()!=null || !cook.getValue().isEmpty())){
+
+    private String getToken(HttpServletRequest request) {
+        var cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cook : cookies) {
+                if (cook.getName().equals("login-token") && (cook.getValue() != null || !cook.getValue().isEmpty())) {
                     return cook.getValue();
                 }
             }
         }
-        return prefix;
+        return null;
     }
 
 }

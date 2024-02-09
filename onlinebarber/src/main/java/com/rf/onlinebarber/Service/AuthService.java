@@ -26,7 +26,7 @@ public class AuthService {
         Shop shop=shopRepository.findByEmail(authRequest.getEmail()).orElseThrow(()->new ShopNotFoundException());
         if(!encoder.matches(authRequest.getPassword(),shop.getPassword())) throw new AuthException();
        Token token= tokenService.createToken(shop);
-       shop.setLoginDateTime(LocalDateTime.now());
+
        shopRepository.save(shop);
         AuthResponse authResponse=AuthResponse.builder().token(token).shop(converter.shopConverter(shop)).build();
         return authResponse;

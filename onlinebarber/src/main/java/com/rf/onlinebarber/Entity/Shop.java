@@ -30,8 +30,7 @@ public class Shop implements UserDetails {
     @Lob
     private String image;
     private String phoneNumber;
-    @JsonIgnore
-    private LocalDateTime loginDateTime;
+
     @OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE)
     @JsonIgnore
     private List<ShavingModel> shavingModels;

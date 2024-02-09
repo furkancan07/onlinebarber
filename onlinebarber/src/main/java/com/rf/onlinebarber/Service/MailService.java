@@ -27,7 +27,7 @@ public class MailService {
     }
 
     // müşteriye siparişiniz oluşmuştur bilgisini gönderme
-    public void sendAppointmentİnformation(Appointment appointment) {
+    public void sendAppointmentInformation(Appointment appointment) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setFrom("noreply@myonlinebarber-app.com");
         mailMessage.setTo(appointment.getCustomer().getEmail());

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -19,6 +20,7 @@ public class TokenService {
     public Token createToken(Shop shop){
         String val= UUID.randomUUID().toString();
         Token token=Token.builder().token(val).shop(shop).build();
+        token.setLoginDateTime(LocalDateTime.now());
         tokenRepository.save(token);
         return token;
     }

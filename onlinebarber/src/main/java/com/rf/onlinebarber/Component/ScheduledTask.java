@@ -53,7 +53,7 @@ public class ScheduledTask {
     public void logout() {
         LocalDateTime now = LocalDateTime.now();
         for (Token token : tokenRepository.findAll()) {
-            Duration duration = Duration.between(token.getShop().getLoginDateTime(),now);
+            Duration duration = Duration.between(token.getLoginDateTime(),now);
             if(duration.toDays()>=150){
                 tokenRepository.delete(token);
             }
